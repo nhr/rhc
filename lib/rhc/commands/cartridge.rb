@@ -207,16 +207,13 @@ module RHC::Commands
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
 
-      # Pull the desired action
-      actions = 0
-      amount = nil
-      operation = :show
-      [:show, :add, :remove, :set].each do |action|
-        if options.__hash__.has_key? action
-          actions += 1
-          amount = options.__hash__[action]
-          operation = action
-        end
+      extra_storage = rest_cartridge.additional_gear_storage
+
+      results do
+        say "#{rest_cartridge.base_gear_storage}GB of base storage per gear"
+
+        amount = extra_storage > 0 ? "#{extra_storage}GB of" : 'No'
+        say "#{amount} additional storage per gear"
       end
 
       # Ensure that only zero or one action was selected
