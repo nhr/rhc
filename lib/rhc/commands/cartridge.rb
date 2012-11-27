@@ -202,9 +202,13 @@ module RHC::Commands
       rest_app = rest_domain.find_application(options.app)
       rest_cartridge = find_cartridge rest_app, cartridge, nil
 
+      extra_storage = rest_cartridge.additional_gear_storage
+
       results do
         say "#{rest_cartridge.base_gear_storage}GB of base storage per gear"
-        say "#{rest_cartridge.additional_gear_storage}GB of additional storage per gear"
+
+        amount = extra_storage > 0 ? "#{extra_storage}GB of" : 'No'
+        say "#{amount} additional storage per gear"
       end
     end
 
