@@ -3,7 +3,7 @@ require 'rhc/rest/base'
 module RHC
   module Rest
     class Cartridge < Base
-      attr_reader :type, :name, :display_name, :properties, :status_messages, :scales_to, :scales_from, :scales_with, :current_scale
+      attr_reader :type, :name, :display_name, :properties, :status_messages, :scales_to, :scales_from, :scales_with, :current_scale, :base_gear_storage, :additional_gear_storage
       def initialize(args, use_debug=false)
         @properties = {}
         props = args[:properties] || args["properties"] || []
