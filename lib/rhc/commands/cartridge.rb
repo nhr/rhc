@@ -192,23 +192,31 @@ module RHC::Commands
       0
     end
 
-    summary 'Show storage information of a cartridge'
+    summary 'Show storage information of cartridges'
     syntax '<cartridge> [--app app]'
     option ["-n", "--namespace namespace"], "Namespace of the application you are adding the cartridge to", :context => :namespace_context, :required => true
     option ["-a", "--app app"], "Application the cartridge belongs to", :context => :app_context, :required => true
-    argument :cartridge, "The name of the cartridge", ["-c", "--cartridge cart_type"]
-    def storage(cartridge)
+    argument :cartridges, "A list of cartridge names", ["-c", "--cartridge cart_type"], :arg_type => :list
+    def storage(cartridges)
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
-      rest_cartridge = find_cartridge rest_app, cartridge, nil
+      rest_cartridges = find_cartridges(rest_app, cartridges)
 
-      extra_storage = rest_cartridge.additional_gear_storage
+      if rest_cartridges.empty?
+        results { say 'No cartridges found.' }
+      else
+        results do
+          rest_cartridges.each do |rest_cartridge|
+            extra_storage = rest_cartridge.additional_gear_storage
 
-      results do
-        say "#{rest_cartridge.base_gear_storage}GB of base storage per gear"
+            say '----------------------------------------------'
+            say "Cartridge:  #{rest_cartridge.display_name}"
+            say "#{rest_cartridge.base_gear_storage}GB of base storage per gear"
 
-        amount = extra_storage > 0 ? "#{extra_storage}GB of" : 'No'
-        say "#{amount} additional storage per gear"
+            amount = extra_storage > 0 ? "#{extra_storage}GB of" : 'No'
+            say "#{amount} additional storage per gear"
+          end
+        end
       end
     end
 

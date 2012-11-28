@@ -21,6 +21,11 @@ module RHC
       carts[0]
     end
 
+    def find_cartridges(rest_obj, cartridge_list, type='embedded')
+      # TODO:  Pull out and tame this regex!
+      rest_obj.find_cartridges :regex => cartridge_list.collect { |c| "^#{c.rstrip}(-[0-9\.]+){0,1}$" }.join('|'), :type => type
+    end
+
     def cart_regex(cart)
       "^#{cart.rstrip}(-[0-9\.]+){0,1}$"
     end
