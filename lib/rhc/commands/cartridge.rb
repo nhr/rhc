@@ -200,24 +200,8 @@ module RHC::Commands
     def storage(cartridges)
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
-      rest_cartridges = find_cartridges(rest_app, cartridges)
 
-      if rest_cartridges.empty?
-        results { say 'No cartridges found.' }
-      else
-        results do
-          rest_cartridges.each do |rest_cartridge|
-            extra_storage = rest_cartridge.additional_gear_storage
-
-            say '----------------------------------------------'
-            say "Cartridge:  #{rest_cartridge.display_name}"
-            say "#{rest_cartridge.base_gear_storage}GB of base storage per gear"
-
-            amount = extra_storage > 0 ? "#{extra_storage}GB of" : 'No'
-            say "#{amount} additional storage per gear"
-          end
-        end
-      end
+      display_storage_info find_cartridges(rest_app, cartridges)
     end
 
     private
