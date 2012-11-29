@@ -192,16 +192,35 @@ module RHC::Commands
       0
     end
 
-    summary 'Show storage information of cartridges'
-    syntax '<cartridge> [--app app]'
-    option ["-n", "--namespace namespace"], "Namespace of the application you are adding the cartridge to", :context => :namespace_context, :required => true
+    summary 'Increase data storage on cartridge'
+    syntax '[<cartridge>] [--show] [--add|--remove|--set amount] [--namespace namespace] [--app app] [--timeout timeout]'
+    argument :cart_type, "The name of the cartridge", ["-c", "--cartridge cart_type"], :arg_type => :list
+    option ["-n", "--namespace namespace"], "Namespace of the cartridge to", :context => :namespace_context, :required => true
     option ["-a", "--app app"], "Application the cartridge belongs to", :context => :app_context, :required => true
-    argument :cartridges, "A list of cartridge names", ["-c", "--cartridge cart_type"], :arg_type => :list
-    def storage(cartridges)
+    option ["--timeout timeout"], "Timeout, in seconds, for the session"
+    option ["--show"], "Show the current base and additional storage capacity"
+    option ["--add amount"], "Add the indicated amount to the additional storage capacity"
+    option ["--remove amount"], "Remove the indicated amount from the additional storage capacity"
+    option ["--set amount"], "Set the specified amount of additional storage capacity"
+    def storage(cartridge)
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
+      rest_cartridge = find_cartridge rest_app, cartridge, nil
 
-      display_storage_info find_cartridges(rest_app, cartridges)
+      action_count = options.keys.find_all{ |key| [:show, :add, :remove, :set] }.count
+
+      puts "FOO: #{action_count}"
+
+      #cart = rest_cartridge.storage({
+      #  :additional_storage => options.additional_gear_storage
+      #})
+
+      results do
+        say "Success: additional storage space added"
+        display_cart(cart)
+      end
+
+      0
     end
 
     private
