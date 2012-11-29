@@ -202,12 +202,8 @@ module RHC::Commands
     option ["--add amount"], "Add the indicated amount to the additional storage capacity"
     option ["--remove amount"], "Remove the indicated amount from the additional storage capacity"
     option ["--set amount"], "Set the specified amount of additional storage capacity"
-<<<<<<< HEAD
     option ["-f", "--force"], "Force the action"
     def storage(cartridges)
-=======
-    def storage(cartridge)
->>>>>>> Temporary commit to build
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
       rest_cartridge = find_cartridge rest_app, cartridge, nil
@@ -220,7 +216,6 @@ module RHC::Commands
       #  :additional_storage => options.additional_gear_storage
       #})
 
-<<<<<<< HEAD
       if rest_cartridges.empty?
         results { say 'No cartridges found.' }
       else
@@ -280,11 +275,6 @@ module RHC::Commands
           say "Success: additional storage space set to #{total_amount}GB\n"
           display_storage_info [cart]
         end
-=======
-      results do
-        say "Success: additional storage space added"
-        display_cart(cart)
->>>>>>> Temporary commit to build
       end
 
       0
