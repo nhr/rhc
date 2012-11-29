@@ -194,7 +194,7 @@ module RHC::Commands
 
     summary 'Increase data storage on cartridge'
     syntax '<cartridge> -a app [--show] [--add|--remove|--set amount] [--namespace namespace] [--timeout timeout]'
-    argument :cart_type, "The name of the cartridge", ["-c", "--cartridge cart_type"]
+    argument :cart_type, "The name of the cartridge", ["-c", "--cartridge cart_type"], :arg_type => :list
     option ["-n", "--namespace namespace"], "Namespace of the cartridge to", :context => :namespace_context, :required => true
     option ["-a", "--app app"], "Application the cartridge belongs to", :context => :app_context, :required => true
     option ["--timeout timeout"], "Timeout, in seconds, for the session"
@@ -203,19 +203,18 @@ module RHC::Commands
     option ["--remove amount"], "Remove the indicated amount from the additional storage capacity"
     option ["--set amount"], "Set the specified amount of additional storage capacity"
     option ["-f", "--force"], "Force the action"
-    def storage(cartridge)
+    def storage(cartridges)
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
-      rest_cartridge = find_cartridge rest_app, cartridge, nil
 
       # Pull the desired action
       actions = []
       amount = nil
       operation = :show
       [:show, :add, :remove, :set].each do |action|
-        unless options.send(action).nil?
+        if options.__hash__.has_key? action
           actions << action
-          amount = options.send(action)
+          amount = options.__hash__[action]
           operation = action
         end
       end
@@ -224,16 +223,26 @@ module RHC::Commands
       raise RHC::AdditionalStorageArgumentsException if actions.length > 1
 
       # Perform a storage change action if requested
-      unless operation == :show
-        amount = amount.match(/^(\d+)(GB)?$/i)[1]
-        raise AdditionalStorageValueException if amount.nil?
+      if operation == :show
+        results do
+          display_storage_info find_cartridges(rest_app, cartridges)
+        end
+      else
+        raise RHC::MultipleCartridgesException,
+          'Exactly one cartridge must be specified for this operation' if cartridges.length != 1
 
+        rest_cartridge = find_cartridge rest_app, cartridges.first, nil
+        amount = amount.match(/^(\d+)(GB)?$/i)
+        raise RHC::AdditionalStorageValueException if amount.nil?
+
+        # If the amount is specified, find the regex match and convert to a number
+        amount = amount[1].to_i
         total_amount = rest_cartridge.additional_gear_storage
         if operation == :add
           total_amount += amount
         elsif operation == :remove
           if amount > total_amount and not option.force
-            raise AdditionalStorageRemoveException
+            raise RHC::AdditionalStorageRemoveException
           else
             total_amount = amount >= total_amount ? 0 : total_amount - amount
           end
@@ -241,15 +250,12 @@ module RHC::Commands
           total_amount = amount
         end
 
-        cart = rest_cartridge.storage({
-            :additional_storage => total_amount
-        })
-      end
+        cart = rest_cartridge.set_storage(:additional_storage => total_amount)
+        results do
+          say "Success: additional storage space set to #{total_amount}GB"
+          display_storage_info [cart]
+        end
 
-      # Always show the result
-      results do
-        say "Success: additional storage space set to #{total_amount}GB" unless operation == :show
-        display_cart(rest_cartridge)
       end
 
       0
