@@ -123,17 +123,13 @@ module RHC
     end
 
     def display_storage_info(carts)
-      if carts.nil? || carts.empty?
-        say 'No cartridges found.'
-      else
-        carts.each do |cart|
-          puts
-          say "Cartridge:  #{cart.display_name}"
-          say "#{cart.base_gear_storage}GB of base storage per gear"
+      carts.each do |cart|
+        puts
+        say "Cartridge:  #{cart.display_name}"
+        say "#{cart.base_gear_storage}GB of base storage per gear"
 
-          amount = cart.additional_gear_storage > 0 ? "#{cart.additional_gear_storage}GB of" : 'No'
-          say "#{amount} additional storage per gear"
-        end
+        amount = cart.additional_gear_storage > 0 ? "#{cart.additional_gear_storage}GB of" : 'No'
+        say "#{amount} additional storage per gear"
       end
     end
 

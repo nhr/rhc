@@ -208,24 +208,30 @@ module RHC::Commands
       rest_app = rest_domain.find_application(options.app)
 
       # Pull the desired action
-      actions = []
+      actions = 0
       amount = nil
       operation = :show
       [:show, :add, :remove, :set].each do |action|
         if options.__hash__.has_key? action
-          actions << action
+          actions += 1
           amount = options.__hash__[action]
           operation = action
         end
       end
 
       # Ensure that only zero or one action was selected
-      raise RHC::AdditionalStorageArgumentsException if actions.length > 1
+      raise RHC::AdditionalStorageArgumentsException if actions > 1
 
       # Perform a storage change action if requested
       if operation == :show
         results do
-          display_storage_info find_cartridges(rest_app, cartridges)
+          if cartridges.length == 0
+            display_storage_info rest_app.cartridges
+          else
+            cartridges.each do |cartridge|
+              display_storage_info [rest_app.find_cartridge(cartridge)]
+            end
+          end
         end
       else
         raise RHC::MultipleCartridgesException,
@@ -241,7 +247,7 @@ module RHC::Commands
         if operation == :add
           total_amount += amount
         elsif operation == :remove
-          if amount > total_amount and not option.force
+          if amount > total_amount and not options.force
             raise RHC::AdditionalStorageRemoveException
           else
             total_amount = amount >= total_amount ? 0 : total_amount - amount
@@ -252,10 +258,9 @@ module RHC::Commands
 
         cart = rest_cartridge.set_storage(:additional_storage => total_amount)
         results do
-          say "Success: additional storage space set to #{total_amount}GB"
+          say "Success: additional storage space set to #{total_amount}GB\n"
           display_storage_info [cart]
         end
-
       end
 
       0
