@@ -192,8 +192,8 @@ module RHC::Commands
       0
     end
 
-    summary 'Increase data storage on cartridge'
-    syntax '<cartridge> -a app [--show] [--add|--remove|--set amount] [--namespace namespace] [--timeout timeout]'
+    summary 'Show or modify data storage on cartridge'
+    syntax '[<cartridge>] [--show] [--add|--remove|--set amount] [--namespace namespace] [--app app] [--timeout timeout]'
     argument :cart_type, "The name of the cartridge", ["-c", "--cartridge cart_type"], :arg_type => :list
     option ["-n", "--namespace namespace"], "Namespace of the cartridge to", :context => :namespace_context, :required => true
     option ["-a", "--app app"], "Application the cartridge belongs to", :context => :app_context, :required => true
@@ -202,11 +202,25 @@ module RHC::Commands
     option ["--add amount"], "Add the indicated amount to the additional storage capacity"
     option ["--remove amount"], "Remove the indicated amount from the additional storage capacity"
     option ["--set amount"], "Set the specified amount of additional storage capacity"
+<<<<<<< HEAD
     option ["-f", "--force"], "Force the action"
     def storage(cartridges)
+=======
+    def storage(cartridge)
+>>>>>>> Temporary commit to build
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
+      rest_cartridge = find_cartridge rest_app, cartridge, nil
 
+      action_count = options.keys.find_all{ |key| [:show, :add, :remove, :set] }.count
+
+      puts "FOO: #{action_count}"
+
+      #cart = rest_cartridge.storage({
+      #  :additional_storage => options.additional_gear_storage
+      #})
+
+<<<<<<< HEAD
       if rest_cartridges.empty?
         results { say 'No cartridges found.' }
       else
@@ -266,6 +280,11 @@ module RHC::Commands
           say "Success: additional storage space set to #{total_amount}GB\n"
           display_storage_info [cart]
         end
+=======
+      results do
+        say "Success: additional storage space added"
+        display_cart(cart)
+>>>>>>> Temporary commit to build
       end
 
       0
