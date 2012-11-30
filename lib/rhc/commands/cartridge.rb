@@ -192,8 +192,8 @@ module RHC::Commands
       0
     end
 
-    summary 'Show or modify data storage on cartridge'
-    syntax '[<cartridge>] [--show] [--add|--remove|--set amount] [--namespace namespace] [--app app] [--timeout timeout]'
+    summary 'View/manipulate storage on a cartridge'
+    syntax '<cartridge> -a app [--show] [--add|--remove|--set amount] [--namespace namespace] [--timeout timeout]'
     argument :cart_type, "The name of the cartridge", ["-c", "--cartridge cart_type"], :arg_type => :list
     option ["-n", "--namespace namespace"], "Namespace of the cartridge to", :context => :namespace_context, :required => true
     option ["-a", "--app app"], "Application the cartridge belongs to", :context => :app_context, :required => true
