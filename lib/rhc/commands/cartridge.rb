@@ -210,12 +210,6 @@ module RHC::Commands
 
       action_count = options.keys.find_all{ |key| [:show, :add, :remove, :set] }.count
 
-      puts "FOO: #{action_count}"
-
-      #cart = rest_cartridge.storage({
-      #  :additional_storage => options.additional_gear_storage
-      #})
-
       if rest_cartridges.empty?
         results { say 'No cartridges found.' }
       else
@@ -233,8 +227,15 @@ module RHC::Commands
         end
       end
 
+      # Pull the desired action
+      #
+      actions = options.__hash__.keys & [:show, :add, :remove, :set]
+
       # Ensure that only zero or one action was selected
-      raise RHC::AdditionalStorageArgumentsException if actions > 1
+      raise RHC::AdditionalStorageArgumentsException if actions.length > 1
+
+      operation = actions.first || :show
+      amount = options.__hash__[operation]
 
       # Perform a storage change action if requested
       if operation == :show
