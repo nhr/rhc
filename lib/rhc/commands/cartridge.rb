@@ -241,10 +241,12 @@ module RHC::Commands
       if operation == :show
         results do
           if cartridges.length == 0
-            display_storage_info rest_app.cartridges
+            display_cart_storage_list rest_app.cartridges
           else
-            cartridges.each do |cartridge|
-              display_storage_info [rest_app.find_cartridge(cartridge)]
+            cartridges.each do |cartridge_name|
+              rest_app.find_cartridge(cartridge_name) do |cart|
+                display_cart_storage_info cart, cart.display_name
+              end
             end
           end
         end
@@ -274,7 +276,7 @@ module RHC::Commands
         cart = rest_cartridge.set_storage(:additional_storage => total_amount)
         results do
           say "Success: additional storage space set to #{total_amount}GB\n"
-          display_storage_info [cart]
+          display_cart_storage_info cart
         end
       end
 
