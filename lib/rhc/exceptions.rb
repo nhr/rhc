@@ -124,16 +124,4 @@ module RHC
       super message, 1
     end
   end
-
-  class AdditionalStorageCapabilitiesException < Exception
-    def initialize(message="Additional storage is not available with your current plan")
-      super message, 1
-    end
-  end
-
-  class AdditionalStorageLimitException < Exception
-    def initialize(message="This request exceeds the storage limits of the current plan")
-      super message, 1
-    end
-  end
 end
