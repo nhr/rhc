@@ -244,9 +244,8 @@ module RHC::Commands
             display_cart_storage_list rest_app.cartridges
           else
             cartridges.each do |cartridge_name|
-              rest_app.find_cartridge(cartridge_name) do |cart|
-                display_cart_storage_info cart, cart.display_name
-              end
+              cart = rest_app.find_cartridge(cartridge_name)
+              display_cart_storage_info cart, cart.display_name
             end
           end
         end

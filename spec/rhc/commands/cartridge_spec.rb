@@ -381,11 +381,11 @@ describe RHC::Commands::Cartridge do
       end
       it "should add storage for the indicated app and cart" do
         @extra_args = ["--add", "5GB"]
-        run_output.should match('10GB of additional storage per gear')
+        run_output.should match('10GB')
       end
       it "should remove storage for the indicated app and cart" do
         @extra_args = ["--remove", "5GB"]
-        run_output.should match('No additional storage per gear')
+        run_output.should match('None')
       end
       it "should warn when told to remove more storage than the indicated app and cart have" do
         @extra_args = ["--remove", "70GB"]
@@ -393,15 +393,15 @@ describe RHC::Commands::Cartridge do
       end
       it "should not warn when told to remove more storage than the indicated app and cart have when forced" do
         @extra_args = ["--remove", "70GB", "--force"]
-        run_output.should match('No additional storage per gear')
+        run_output.should match('None')
       end
       it "should set storage for the indicated app and cart" do
         @extra_args = ["--set", "6GB"]
-        run_output.should match('6GB of additional storage per gear')
+        run_output.should match('6GB')
       end
       it "should work correctly with a bare number value" do
         @extra_args = ["--set", "6"]
-        run_output.should match('6GB of additional storage per gear')
+        run_output.should match('6GB')
       end
     end
 

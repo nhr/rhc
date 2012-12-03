@@ -189,7 +189,7 @@ module RHC
         when :scales_from,:scales_to
           (value == -1 ? "available gears" : value)
         when :base_gear_storage,:additional_gear_storage
-          "#{value} GB"
+          (value == 0 ? "None" : "#{value}GB")
         when :aliases
           value.join ' '
         else
