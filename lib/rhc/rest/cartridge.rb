@@ -13,6 +13,10 @@ module RHC
           @properties[:"#{p['type']}"] = category
         end
 
+        # Make sure that additional gear storage is an integer
+        # TODO:  This should probably be fixed in the broker
+        args['additional_gear_storage'] = args['additional_gear_storage'].to_i rescue 0
+
         super
       end
 

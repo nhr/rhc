@@ -417,7 +417,7 @@ describe RHC::Commands::Cartridge do
       end
       it "should raise an error when the storage amount is invalid" do
         @extra_args = ["--set", "5ZB"]
-        fail_with_message("The amount format must be an integer, optionally followed by 'GB'")
+        fail_with_message("The amount format must be a number, optionally followed by 'GB'")
       end
     end
   end

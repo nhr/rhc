@@ -260,13 +260,14 @@ module RHC::Commands
         # If the amount is specified, find the regex match and convert to a number
         amount = amount[1].to_i
         total_amount = rest_cartridge.additional_gear_storage
+
         if operation == :add
           total_amount += amount
         elsif operation == :remove
-          if amount > total_amount and not options.force
+          if amount > total_amount && !options.force
             raise RHC::AdditionalStorageRemoveException
           else
-            total_amount = amount >= total_amount ? 0 : total_amount - amount
+            total_amount = [total_amount - amount, 0].max
           end
         else
           total_amount = amount

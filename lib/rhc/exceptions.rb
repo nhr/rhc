@@ -114,7 +114,7 @@ module RHC
   end
 
   class AdditionalStorageValueException < Exception
-    def initialize(message="The amount format must be an integer, optionally followed by 'GB' (ex.: 5GB)")
+    def initialize(message="The amount format must be a number, optionally followed by 'GB' (ex.: 5GB)")
       super message, 1
     end
   end
