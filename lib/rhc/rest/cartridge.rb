@@ -68,12 +68,7 @@ module RHC
       end
 
       def set_storage(values)
-        debug "Setting additional storage: #{values[:additional_storage]}GB"
-        rest_method "UPDATE", values
-      end
-
-      def set_storage(values)
-        debug "Setting additional storage: #{values[:storage]}GB"
+        debug "Setting additional storage: #{values[:additional_gear_storage]}GB"
         rest_method "UPDATE", values
       end
 

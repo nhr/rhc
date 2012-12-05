@@ -206,26 +206,6 @@ module RHC::Commands
     def storage(cartridges)
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
-      rest_cartridge = find_cartridge rest_app, cartridge, nil
-
-      action_count = options.keys.find_all{ |key| [:show, :add, :remove, :set] }.count
-
-      if rest_cartridges.empty?
-        results { say 'No cartridges found.' }
-      else
-        results do
-          rest_cartridges.each do |rest_cartridge|
-            extra_storage = rest_cartridge.additional_gear_storage
-
-            say '----------------------------------------------'
-            say "Cartridge:  #{rest_cartridge.display_name}"
-            say "#{rest_cartridge.base_gear_storage}GB of base storage per gear"
-
-            amount = extra_storage > 0 ? "#{extra_storage}GB of" : 'No'
-            say "#{amount} additional storage per gear"
-          end
-        end
-      end
 
       # Pull the desired action
       #
@@ -273,7 +253,7 @@ module RHC::Commands
           total_amount = amount
         end
 
-        cart = rest_cartridge.set_storage(:additional_storage => total_amount)
+        cart = rest_cartridge.set_storage(:additional_gear_storage => total_amount)
         results do
           say "Success: additional storage space set to #{total_amount}GB\n"
           display_cart_storage_info cart
