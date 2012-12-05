@@ -204,6 +204,10 @@ module RHC::Commands
     option ["--set amount"], "Set the specified amount of additional storage capacity"
     option ["-f", "--force"], "Force the action"
     def storage(cartridges)
+      # Make sure that we are dealing with an array (-c param will only pass in a string)
+      # BZ 883658
+      cartridges = [cartridges].flatten
+
       rest_domain = rest_client.find_domain(options.namespace)
       rest_app = rest_domain.find_application(options.app)
 

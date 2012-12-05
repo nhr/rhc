@@ -372,6 +372,19 @@ describe RHC::Commands::Cartridge do
       it { fail_with_message("Cartridge bogus_cart can't be found in application", 154) }
     end
 
+    context 'when run with -c flag' do
+      let(:arguments) { cmd_base | ['-c', 'mock_cart-1'] | std_args}
+      it "should show storage info for the indicated app and cart" do
+        run_output.should match('mock_cart-1')
+        run_output.should_not match('mock_type')
+      end
+
+      it "should set storage for the indicated app and cart" do
+        @extra_args = ["--set", "6GB"]
+        run_output.should match('6GB')
+      end
+    end
+
     context 'when run with valid arguments' do
       let(:arguments) { cmd_base | cart_type | std_args }
       it "should show storage info for the indicated app and cart" do
